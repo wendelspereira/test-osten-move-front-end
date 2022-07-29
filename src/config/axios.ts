@@ -1,6 +1,7 @@
 import axios from "axios";
+import { server } from "../config/env";
 
 export const api = axios.create({
-  baseURL: "http://localhost:3333/business", 
+  baseURL: server,
   timeout: 2500,
 });
