@@ -9,14 +9,12 @@ interface IDeleteBusinessProps {
 export function DeleteBusiness(props: IDeleteBusinessProps) {
   async function handleDelete() {
     try {
-      const result = await api.delete(`/?id=${props.id}`);
-      if (result.status != 204) {
-        alert("Erro ao excluir. Por favor, tente novamente");
-        return;
-      }
+      await api.delete(`/?id=${props.id}`);
       props.closeModal();
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      console.log(err.response.data);
+      alert("Erro ao excluir. Por favor, tente novamente");
+      return;
     }
   }
 
@@ -31,7 +29,7 @@ export function DeleteBusiness(props: IDeleteBusinessProps) {
       </div>
 
       <p>
-        Tem certeza que deseja excluir este registro da base de dados? <br/>
+        Tem certeza que deseja excluir este registro da base de dados? <br />
         Não será possível recuperar os dados excluídos.
       </p>
 

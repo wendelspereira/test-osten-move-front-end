@@ -24,25 +24,29 @@ export function UpdateBusiness(props: IUpdateBusinessProps) {
 
   async function handleSubmit(data: Business) {
     try {
-      const result = await api.patch(`/?id=${props.id}`, { ...data });
-
-      if (result.status !== 200) {
-        switch (result.status) {
-          case 400:
-            alert("Erro ao editar! Por favor tente novamente.");
-            return;
-          case 450:
-            alert("CNPJ inválido! Por favor, tente novamente.");
-            return;
-        }
-        return;
-      }
+      await api.patch(`/?id=${props.id}`, { ...data });
       props.closeModal();
-    } catch (err) {}
+    } catch (err: any) {
+      console.log(err.response.data);
+      switch (err.response.status) {
+        case 450:
+          alert("CNPJ inválido! Por favor, tente novamente.");
+          return;
+        case 409:
+          alert("Já existe um risgistro para o CNPJ informado.");
+          return;
+      }
+
+      alert("Algo deu errado, por favor tente novamente ou contate o suporte");
+      props.closeModal();
+      return;
+    }
   }
 
   return (
-    <div className="flex flex-col  w-[36rem] px-12 pt-8 pb-6">
+    <div
+      className={styles.container + " flex flex-col  w-[36rem] px-12 pt-8 pb-6"}
+    >
       <div className="w-full border-b-[2px] border-gray-100 ">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-600 ">
@@ -61,36 +65,44 @@ export function UpdateBusiness(props: IUpdateBusinessProps) {
           name="corporateName"
           placeholder="Razão social"
           required
-          className={styles.input}
+          autoFocus={true}
         />
         <Input
           defaultValue={data!.tradeName}
           name="tradeName"
           placeholder="Nome fantasia"
           required
-          className={styles.input}
         />
         <Input
           defaultValue={data!.cnpj}
           name="cnpj"
           placeholder="CNPJ"
           required
-          className={styles.input}
+          title="Este campo deve ter o seguinte formato: 00.000.000/0001-00"
+          pattern="[0-9]{2}.[0-9]{3}.[0-9]{3}/[0-9]{4}-[0-9]{2}"
         />
         <div className="flex items center gap-4 ">
           <Input
             defaultValue={data!.prefixPhoneNumber}
+            type={"tel"}
+            pattern="[0-9]{2}"
             name="prefixPhoneNumber"
             placeholder="DDD"
             required
-            className={styles.input + " w-[15%]"}
+            className="w-[15%]"
+            title="Este campo deve conter 2 digitos numéricos"
+            maxLength={2}
           />
           <Input
             defaultValue={data!.phoneNumber}
+            type={"tel"}
+            pattern="[0-9]{8}"
+            required
+            title="Este campo deve ter o seguinte formato: 33333333"
             name="phoneNumber"
             placeholder="Telefone"
-            required
-            className={styles.input + " w-[85%]"}
+            maxLength={8}
+            className="w-[85%]"
           />
         </div>
         <Input
@@ -98,27 +110,23 @@ export function UpdateBusiness(props: IUpdateBusinessProps) {
           name="publicPlace"
           placeholder="Logradouro"
           required
-          className={styles.input}
         />
         <Input
           defaultValue={data?.complement}
           name="complement"
           placeholder="Complemento"
-          className={styles.input}
         />
         <Input
           defaultValue={data!.streetNumber}
           name="streetNumber"
           placeholder="Número"
           required
-          className={styles.input}
         />
         <Input
           defaultValue={data!.district}
           name="district"
           placeholder="Bairro"
           required
-          className={styles.input}
         />
         <div className="flex items center gap-4">
           <Input
@@ -126,14 +134,16 @@ export function UpdateBusiness(props: IUpdateBusinessProps) {
             name="city"
             placeholder="Cidade"
             required
-            className={styles.input + " w-[80%]"}
+            className=" w-[80%]"
           />
           <Input
             defaultValue={data!.federatedUnit}
             name="federatedUnit"
             placeholder="UF"
             required
-            className={styles.input + " w-[20%]"}
+            className="w-[20%]"
+            maxLength={2}
+            title="Este campo deve ter o seguinte formato: DF"
           />
         </div>
         <div className="flex justify-end gap-4 mt-2">

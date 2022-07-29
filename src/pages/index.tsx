@@ -87,7 +87,6 @@ const Home: NextPage<IPageHomeProps> = (props: IPageHomeProps) => {
     if (query !== "") {
       api(`/search/?tradeName=${query}`).then((response) => {
         setSearchedData(response.data);
-        console.log(response.data);
       });
     } else {
       setSearchedData(null);

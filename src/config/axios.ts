@@ -2,5 +2,5 @@ import axios from "axios";
 
 export const api = axios.create({
   baseURL: "http://localhost:3333/business", 
-  timeout: 8000,
+  timeout: 2500,
 });
