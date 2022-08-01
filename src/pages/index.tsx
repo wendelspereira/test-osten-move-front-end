@@ -13,6 +13,7 @@ import Modal from "react-modal";
 import { api } from "../config/axios";
 import Input from "../components/input";
 import { formatId } from "../utils/formatId";
+import { CircularProgress } from "@mui/material";
 
 interface IPageHomeProps {
   data: Business[];
@@ -23,18 +24,26 @@ interface IModalProps {
   child: ReactComponentElement<FC> | undefined;
 }
 
-export async function getServerSideProps() {
-  const response = await api.get("/list");
-  const data = await response.data;
+// export async function getServerSideProps() {
+//   const response = await api.get("/list");
+//   const data = await response.data;
 
-  return { props: { data } };
-}
+//   return { props: { data } };
+// }
 
-const Home: NextPage<IPageHomeProps> = (props: IPageHomeProps) => {
+const Home: NextPage<IPageHomeProps> = () => {
   const router = useRouter();
   const refetch = () => {
     router.replace(router.asPath);
   };
+
+  // const [data, setData] = useState(null)
+
+  // useEffect(()=>{
+  //   useFetch
+  // })
+
+  const { data, isFetching } = useFetch<Business[]>("/list");
 
   const [modal, setModalProps] = useState<IModalProps>({
     isOpen: false,
@@ -154,47 +163,55 @@ const Home: NextPage<IPageHomeProps> = (props: IPageHomeProps) => {
           </thead>
 
           <tbody className="w-full h-full ">
-            {(searchedData || props.data).map((business) => {
-              const { id, tradeName, cnpj } = business;
-              return (
-                <tr
-                  key={id}
-                  className="w-full h-10 border-b-[1px] flex items-center justify-between px-[10%] hover:bg-gray-100 transition-colors
+            {isFetching ? (
+              <tr className="flex items-center justify-center w-full h-[10rem]">
+                <td>
+                  <CircularProgress />
+                </td>
+              </tr>
+            ) : (
+              (searchedData || data!).map((business) => {
+                const { id, tradeName, cnpj } = business;
+                return (
+                  <tr
+                    key={id}
+                    className="w-full h-10 border-b-[1px] flex items-center justify-between px-[10%] hover:bg-gray-100 transition-colors
                     "
-                >
-                  <td className="w-full h-full flex items-center justify-start text-gray-600 ">
-                    <div className="w-[30%] lg:w-[20%] font-medium text-blue-900">
-                      {formatId(id)}
-                    </div>
-                    <div className="w-[40%] truncate">{tradeName}</div>
-                    <div className="w-[30%] pr-5">{cnpj}</div>
-                  </td>
-                  <td className="hidden absolute right-28  md:flex gap-8 ">
-                    <Eye
-                      size={20}
-                      color="#64748B"
-                      weight="bold"
-                      onClick={() => handleMoreDatails(id!)}
-                      className="hover:opacity-80 hover:cursor-pointer transition-colors"
-                    />
-                    <NotePencil
-                      size={20}
-                      color="#64748B"
-                      weight="bold"
-                      onClick={() => handleUpdate(id!)}
-                      className="hover:opacity-80 hover:cursor-pointer transition-colors"
-                    />
-                    <Trash
-                      size={20}
-                      color="#64748B"
-                      weight="bold"
-                      onClick={() => handleDelete(id!)}
-                      className="hover:opacity-80 hover:cursor-pointer transition-colors"
-                    />
-                  </td>
-                </tr>
-              );
-            })}
+                  >
+                    <td className="w-full h-full flex items-center justify-start text-gray-600 ">
+                      <div className="w-[30%] lg:w-[20%] font-medium text-blue-900">
+                        {formatId(id)}
+                      </div>
+                      <div className="w-[40%] truncate">{tradeName}</div>
+                      <div className="w-[30%] pr-5">{cnpj}</div>
+                    </td>
+                    <td className="hidden absolute right-28  md:flex gap-8 ">
+                      <Eye
+                        size={20}
+                        color="#64748B"
+                        weight="bold"
+                        onClick={() => handleMoreDatails(id!)}
+                        className="hover:opacity-80 hover:cursor-pointer transition-colors"
+                      />
+                      <NotePencil
+                        size={20}
+                        color="#64748B"
+                        weight="bold"
+                        onClick={() => handleUpdate(id!)}
+                        className="hover:opacity-80 hover:cursor-pointer transition-colors"
+                      />
+                      <Trash
+                        size={20}
+                        color="#64748B"
+                        weight="bold"
+                        onClick={() => handleDelete(id!)}
+                        className="hover:opacity-80 hover:cursor-pointer transition-colors"
+                      />
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </main>
