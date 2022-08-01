@@ -145,10 +145,10 @@ const Home: NextPage<IPageHomeProps> = (props: IPageHomeProps) => {
         <table className="bg-white w-full h-fit shadow-md rounded-md">
           <thead className="w-full h-12 border-b-[1px] flex items-center px-[10%] text-lg font-bold text-gray-300">
             <tr className="flex w-full h-full">
-              <th className="w-[20%] lg:w-[20%]  h-full flex items-center">
+              <th className="w-[30%] lg:w-[20%]  h-full flex items-center">
                 ID
               </th>
-              <th className="w-[50%] h-full flex items-center">Razão Social</th>
+              <th className="w-[40%] h-full flex items-center">Razão Social</th>
               <th className="w-[30%] h-full flex items-center">CNPJ</th>
             </tr>
           </thead>
@@ -163,10 +163,10 @@ const Home: NextPage<IPageHomeProps> = (props: IPageHomeProps) => {
                     "
                 >
                   <td className="w-full h-full flex items-center justify-start text-gray-600 ">
-                    <div className="w-[20%] lg:w-[20%] font-medium text-blue-900">
+                    <div className="w-[30%] lg:w-[20%] font-medium text-blue-900">
                       {formatId(id)}
                     </div>
-                    <div className="w-[50%] truncate">{tradeName}</div>
+                    <div className="w-[40%] truncate">{tradeName}</div>
                     <div className="w-[30%] pr-5">{cnpj}</div>
                   </td>
                   <td className="hidden absolute right-28  md:flex gap-8 ">
